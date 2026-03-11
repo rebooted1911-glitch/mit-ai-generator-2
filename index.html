@@ -2,7 +2,7 @@
 <html>
 
 <head>
-
+<script src="https://unpkg.com/blockly/blockly.min.js"></script>
 <title>MIT App Inventor AI Generator</title>
 
 <style>
@@ -93,7 +93,23 @@ margin-top:20px;
 <button onclick="copyCode()">Copy Code</button>
 <button onclick="exportAIA()">Export .aia Project</button>
 <div id="output"></div>
+<h3>Drag-and-Drop Block Editor</h3>
 
+<div id="blocklyDiv" style="height:400px; width:100%;"></div>
+
+<xml id="toolbox" style="display:none">
+
+<block type="controls_if"></block>
+
+<block type="logic_compare"></block>
+
+<block type="math_number"></block>
+
+<block type="text"></block>
+
+<block type="text_print"></block>
+
+</xml>
 </div>
 
 <script>
@@ -285,7 +301,9 @@ container.appendChild(div);
 });
 
 }
-
+var workspace = Blockly.inject('blocklyDiv', {
+toolbox: document.getElementById('toolbox')
+});
 </script>
 
 </body>
