@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<script src="https://unpkg.com/blockly/blockly.min.js"></script>
+<title>MIT App Inventor AI Generator</title>
+
+<style>
+.block{
+background:#ffd966;
+padding:10px;
+margin:8px;
+border-radius:6px;
+font-family:monospace;
+text-align:left;
+}
+
+.event{
+background:#ff9f43;
+}
+
+.action{
+background:#4dabf7;
+color:white;
+}
+body{
+font-family: Arial;
+background:#f4f6fb;
+text-align:center;
+padding:40px;
+}
+
+.container{
+background:white;
+padding:30px;
+width:500px;
+margin:auto;
+border-radius:10px;
+box-shadow:0px 0px 10px rgba(0,0,0,0.2);
+}
+
+input{
+width:90%;
+padding:10px;
+font-size:16px;
+margin-top:10px;
+}
+
+button{
+margin-top:15px;
+padding:10px 20px;
+font-size:16px;
+background:#4CAF50;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
+button:hover{
+background:#45a049;
+}
+
+pre{
+background:#eee;
+padding:15px;
+text-align:left;
+border-radius:5px;
+margin-top:20px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>MIT App Inventor AI Generator 🤖</h1>
+
+<p>Describe the app you want:</p>
+
+<input id="userInput" placeholder="Example: create a login system">
+
+<br>
+
+<button onclick="generate()">Generate Code</button>
+
+<button onclick="downloadProject()">Download Project Idea</button>
+<button onclick="createAppPackage()">Create App Package</button>
+<h3>Generated Blocks:</h3>
+<button onclick="copyCode()">Copy Code</button>
+<button onclick="exportAIA()">Export .aia Project</button>
+<div id="output"></div>
+<h3>Drag-and-Drop Block Editor</h3>
+
+<div id="blocklyDiv" style="height:400px; width:100%;"></div>
+
+<xml id="toolbox" style="display:none">
+
+<block type="controls_if"></block>
+
+<block type="logic_compare"></block>
+
+<block type="math_number"></block>
+
+<block type="text"></block>
+
+<block type="text_print"></block>
+
+</xml>
+</div>
+
+<script>
+function exportAIA(){
+
+let projectContent = `
+Project Name: AI Generated App
+
+Components:
+Button1
+Label1
+
+Logic:
+When Button1.Click
+set Label1.Text to "Hello from AI"
+`;
+
+let blob = new Blob([projectContent], {type:"application/zip"});
+
+let link = document.createElement("a");
+
+link.href = URL.createObjectURL(blob);
+
+link.download = "AI_App_Project.aia";
+
+link.click();
+
+}
+function copyCode(){
+
+let text = document.getElementById("output").innerText;
+
+navigator.clipboard.writeText(text);
+
+alert("Code copied!");
+}
+function createAppPackage(){
+
+let content = `
+MIT App Inventor Project
+
+Screen1 Components:
+- Button1
+- Label1
+- TextBox1
+
+Logic:
+When Button1.Click
+set Label1.Text to TextBox1.Text
+
+Instructions:
+1. Open MIT App Inventor
+2. Create a new project
+3. Add the components listed
+4. Recreate the blocks
+`;
+
+let blob = new Blob([content], {type:"text/plain"});
+
+let link = document.createElement("a");
+
+link.href = URL.createObjectURL(blob);
+
+link.download = "MIT_App_Project_Package.txt";
+
+link.click();
+
+}
+function generate(){
+
+    function downloadProject(){
+
+let text = document.getElementById("output").innerText;
+
+let blob = new Blob([text], {type: "text/plain"});
+
+let link = document.createElement("a");
+
+link.href = URL.createObjectURL(blob);
+
+link.download = "MIT_App_Project.txt";
+
+link.click();
+
+}
+
+let text = document.getElementById("userInput").value.toLowerCase();
+
+let result="";
+
+if(text.includes("button")){
+
+result=
+`Components:
+Button1
+Label1
+
+Blocks:
+
+When Button1.Click
+set Label1.Text to "Hello"
+`;
+
+}
+
+else if(text.includes("login")){
+
+result=
+`Components:
+TextBox1 (Username)
+TextBox2 (Password)
+Button1 (Login)
+Notifier1
+
+Blocks:
+
+When Button1.Click
+if TextBox1.Text = "admin"
+and TextBox2.Text = "1234"
+then open Screen2
+else call Notifier1.ShowAlert "Wrong password"
+`;
+
+}
+
+else if(text.includes("calculator")){
+
+result=
+`Components:
+TextBox1
+TextBox2
+Button1 (Add)
+Label1
+
+Blocks:
+
+When Button1.Click
+set Label1.Text to TextBox1.Text + TextBox2.Text
+`;
+
+}
+else if(text.includes("donation")){
+
+result=
+`Components:
+TextBox1 (Donor Name)
+TextBox2 (Address)
+TextBox3 (Donation Item)
+Button1 (Submit)
+Notifier1
+
+Blocks:
+
+When Button1.Click
+if TextBox1.Text ≠ ""
+then
+   call Notifier1.ShowAlert "Thank you for donating!"
+else
+   call Notifier1.ShowAlert "Please enter your name"
+`;
+
+}
+else{
+
+result="AI is still learning. Try: button, login, calculator.";
+
+}
+
+let container = document.getElementById("output");
+
+container.innerHTML = "";
+
+let lines = result.split("\n");
+
+lines.forEach(line => {
+
+let div = document.createElement("div");
+
+div.className = "block";
+
+if(line.includes("When")) div.classList.add("event");
+
+if(line.includes("set") || line.includes("call")) div.classList.add("action");
+
+div.innerText = line;
+
+container.appendChild(div);
+
+});
+
+}
+var workspace = Blockly.inject('blocklyDiv', {
+toolbox: document.getElementById('toolbox')
+});
+</script>
+
+</body>
+
+</html>
